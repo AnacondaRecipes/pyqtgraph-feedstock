@@ -1,35 +1,50 @@
 {% set name = "pyqtgraph" %}
-{% set version = "0.11.0" %}
-{% set sha256 = "ca0a6715882579c46c80df18d9b260a09fce0e086521bfb6fc1f4027f938b35c" %}
+{% set version = "0.12.3" %}
+{% set sha256 = "f1dfee710fa5e9abaaf3d4dff0116659e6c7b4e7b514870c5cddad268a753d74" %}
+
+# on our builders there is no X11 installed and therefore import
+# test will fail
+{% if target_platform != "linux-aarch64" and target_platform != "linux-64"%}
+{% set enable_testingui = true %}
+{% else %}
+{% set enable_testingui = false %}
+{% endif %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  fn: {{ name }}-{{ version }}.tar.gz
   url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
   sha256: {{ sha256 }}
 
 build:
   number: 0
-  script: python -m pip install --no-deps --ignore-installed .
-  noarch: python
-
+  script: {{ PYTHON }} -m pip install . -vv
+  skip: True  # [py<37]
+  skip: True  # [linux and (s390x or ppc64le)]
 requirements:
   host:
     - python
     - pip
     - setuptools
+    - wheel
   run:
     - python
     - numpy
-    # pyqtgraph works with pyqt4 or pyqt5. Don't pin it here.
-    - pyqt
+  run_constrained:
+    - pyside2 >=5.12
+    - pyqt >=5.12
 
+{% if enable_testingui %}
 test:
+  requires:
+    # Add a requirement to the test phase.
+    # Could be pyqt or pyside2
+    - pyqt >=5.12
   imports:
     - pyqtgraph
+{% endif %}
 
 about:
   home: http://www.pyqtgraph.org
@@ -44,10 +59,11 @@ about:
     engineering applications. Despite being written entirely in python, the
     library is very fast due to its heavy leverage of numpy for number
     crunching and Qt's GraphicsView framework for fast display.
-  doc_url: http://www.pyqtgraph.org/documentation/ 
+  doc_url: http://www.pyqtgraph.org/documentation/
   dev_url: https://github.com/pyqtgraph/pyqtgraph
 
 extra:
   recipe-maintainers:
     - astaric
     - marcelotrevisani
+    - ksunden
