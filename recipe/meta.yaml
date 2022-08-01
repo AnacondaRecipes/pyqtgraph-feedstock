@@ -2,6 +2,14 @@
 {% set version = "0.12.3" %}
 {% set sha256 = "f1dfee710fa5e9abaaf3d4dff0116659e6c7b4e7b514870c5cddad268a753d74" %}
 
+# on our builders there is no X11 installed and therefore import
+# test will fail
+{% if target_platform != "linux-aarch64" and target_platform != "linux-64"%}
+{% set enable_testingui = true %}
+{% else %}
+{% set enable_testingui = false %}
+{% endif %}
+
 package:
   name: {{ name|lower }}
   version: {{ version }}
@@ -28,6 +36,7 @@ requirements:
     - pyside2 >=5.12
     - pyqt >=5.12
 
+{% if enable_testingui %}
 test:
   requires:
     # Add a requirement to the test phase.
@@ -35,6 +44,7 @@ test:
     - pyqt >=5.12
   imports:
     - pyqtgraph
+{% endif %}
 
 about:
   home: http://www.pyqtgraph.org
