@@ -22,6 +22,7 @@ build:
   number: 0
   script: {{ PYTHON }} -m pip install . -vv
   skip: True  # [py<38]
+  # pyqt not available for s390x and ppc64le
   skip: True  # [linux and (s390x or ppc64le)]
 requirements:
   host:
