@@ -47,7 +47,7 @@ test:
 {% endif %}
 
 about:
-  home: http://www.pyqtgraph.org
+  home: https://www.pyqtgraph.org
   license: MIT
   license_family: MIT
   license_file: LICENSE.txt
@@ -59,7 +59,7 @@ about:
     engineering applications. Despite being written entirely in python, the
     library is very fast due to its heavy leverage of numpy for number
     crunching and Qt's GraphicsView framework for fast display.
-  doc_url: http://www.pyqtgraph.org/documentation/
+  doc_url: https://pyqtgraph.readthedocs.io/en/latest/
   dev_url: https://github.com/pyqtgraph/pyqtgraph
 
 extra:
