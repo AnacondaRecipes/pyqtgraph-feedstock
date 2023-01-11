@@ -20,7 +20,7 @@ source:
 
 build:
   number: 0
-  script: {{ PYTHON }} -m pip install . -vv
+  script: {{ PYTHON }} -m pip install . -vv --no-deps
   skip: True  # [py<38]
   # pyqt not available for s390x and ppc64le
   skip: True  # [linux and (s390x or ppc64le)]
@@ -37,18 +37,18 @@ requirements:
     - pyside2 >=5.15
     - pyqt >=5.15
 
-{% if enable_testingui %}
 test:
   requires:
+    - pip
+{% if enable_testingui %}
     # Add a requirement to the test phase.
     # Could be pyqt or pyside2
-    - pip
     - pyqt >=5.15
   imports:
     - pyqtgraph
-  commanmds:
-    - pip check
 {% endif %}
+  commands:
+    - pip check
 
 about:
   home: https://www.pyqtgraph.org
