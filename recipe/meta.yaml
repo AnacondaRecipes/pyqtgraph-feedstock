@@ -1,14 +1,5 @@
 {% set name = "pyqtgraph" %}
-{% set version = "0.13.1" %}
-{% set sha256 = "698f87f59db965727b33602a0b29058de21291d8b143dea878b50578aec0dc08" %}
-
-# on our builders there is no X11 installed and therefore import
-# test will fail
-{% if target_platform != "linux-aarch64" and target_platform != "linux-64"%}
-{% set enable_testingui = true %}
-{% else %}
-{% set enable_testingui = false %}
-{% endif %}
+{% set version = "0.13.7" %}
 
 package:
   name: {{ name|lower }}
@@ -16,14 +7,13 @@ package:
 
 source:
   url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: {{ sha256 }}
+  sha256: 64f84f1935c6996d0e09b1ee66fe478a7771e3ca6f3aaa05f00f6e068321d9e3
 
 build:
   number: 0
-  script: {{ PYTHON }} -m pip install . -vv --no-deps
-  skip: True  # [py<38]
-  # pyqt not available for s390x and ppc64le
-  skip: True  # [linux and (s390x or ppc64le)]
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  skip: True  # [py<39]
+
 requirements:
   host:
     - python
@@ -32,23 +22,23 @@ requirements:
     - wheel
   run:
     - python
-    - numpy >=1.20.0
+    - numpy >=1.22.0
   run_constrained:
     - pyside2 >=5.15
     - pyqt >=5.15
 
 test:
-  requires:
-    - pip
-{% if enable_testingui %}
-    # Add a requirement to the test phase.
-    # Could be pyqt or pyside2
-    - pyqt >=5.15
+  source_files:
+    - tests
   imports:
     - pyqtgraph
-{% endif %}
   commands:
     - pip check
+    - pytest -v tests
+  requires:
+    - pip
+    - pytest
+    - pyqt >=5.15
 
 about:
   home: https://www.pyqtgraph.org
@@ -56,14 +46,13 @@ about:
   license_family: MIT
   license_file: LICENSE.txt
   summary: Scientific Graphics and GUI Library for Python
-
   description: |
     PyQtGraph is a pure-python graphics and GUI library built on PyQt4 / 
     PySide and numpy. It is intended for use in mathematics / scientific / 
     engineering applications. Despite being written entirely in python, the
     library is very fast due to its heavy leverage of numpy for number
     crunching and Qt's GraphicsView framework for fast display.
-  doc_url: https://pyqtgraph.readthedocs.io/en/latest/
+  doc_url: https://pyqtgraph.readthedocs.io/
   dev_url: https://github.com/pyqtgraph/pyqtgraph
 
 extra:
