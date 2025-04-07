@@ -55,10 +55,12 @@ requirements:
 # E        +        where <class 'PyQt6.QtCore.Qt'> = QtCore.Qt
 {% set tests_to_skip = tests_to_skip + " or test_InfiniteLine" %}  # [win]
 
+# Current thread 0x00007f497f6ae740 (most recent call first):
+# File "/croot/pyqtgraph_1744020960915/_test_env_placehold_pl/lib/python3.12/site-packages/pyqtgraph/Qt/__init__.py", line 378 in mkQApp
+# File "/croot/pyqtgraph_1744020960915/test_tmp/tests/dockarea/test_dock.py", line 5 in <module>
 # 349 Aborted (core dumped) pytest -v tests
 {% set ignore_tests = "" %}
-{% set ignore_tests = " --ignore=tests/test_dock.py" %}
-
+{% set ignore_tests = " --ignore=tests/test_dock.py" %}  # [linux or osx]
 
 test:
   source_files:
@@ -72,7 +74,7 @@ test:
     - export LD_LIBRARY_PATH="$PREFIX/x86_64-conda-linux-gnu/sysroot/usr/lib64:${LD_LIBRARY_PATH}"  # [linux and x86_64]
     - export LD_LIBRARY_PATH="$PREFIX/aarch64-conda-linux-gnu/sysroot/usr/lib64:${LD_LIBRARY_PATH}"  # [linux and aarch64]
     - python -c "import pyqtgraph; print('Success')"  # [linux]
-    - pytest -v {{ ignore_tests }} tests  # [not win]
+    - pytest -v {{ ignore_tests }} tests  # [not win or not linux]
     - pytest -v -k "not ({{ tests_to_skip }})" tests  # [win]
   requires:
     - pip
