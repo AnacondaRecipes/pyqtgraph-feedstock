@@ -23,6 +23,7 @@ requirements:
   run:
     - python
     - numpy >=1.25.0
+    - colorama
   run_constrained:
     - pyside2 >=5.15
     - pyqt >=5.15
